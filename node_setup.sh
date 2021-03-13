@@ -54,6 +54,8 @@ cat << EOF | tee /etc/hosts
 172.16.2.250 nfs
 EOF
 
+mv /etc/ganesha/ganesha.conf /etc/ganesha/old.ganesha.conf
+
 cat << EOF | tee /etc/ganesha/ganesha.conf
 EXPORT{
     Export_Id = 1 ;       # Unique identifier for each EXPORT (share)
