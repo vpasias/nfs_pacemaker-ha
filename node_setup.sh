@@ -1,7 +1,7 @@
 #! /bin/sh
 
 DEBIAN_FRONTEND=noninteractive apt update
-DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-simplejson xfsprogs
+DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-simplejson xfsprogs sshpass
 DEBIAN_FRONTEND=noninteractive apt install -y corosync glusterfs-server nfs-ganesha-gluster pacemaker pcs
 
 modprobe -v xfs
