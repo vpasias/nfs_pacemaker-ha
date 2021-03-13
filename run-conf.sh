@@ -74,9 +74,9 @@ echo 'run-conf.sh: GlusterFS configuration finished'
 
 echo 'run-conf.sh: Configure Pacemaker'
 
-ssh -o StrictHostKeyChecking=no vagrant@server202 'echo "gprm8350" | sudo passwd hacluster --stdin'
-ssh -o StrictHostKeyChecking=no vagrant@server302 'echo "gprm8350" | sudo passwd hacluster --stdin'
-ssh -o StrictHostKeyChecking=no vagrant@server402 'echo "gprm8350" | sudo passwd hacluster --stdin'
+ssh -o StrictHostKeyChecking=no vagrant@server202 'echo "gprm8350" | sudo passwd hacluster'
+ssh -o StrictHostKeyChecking=no vagrant@server302 'echo "gprm8350" | sudo passwd hacluster'
+ssh -o StrictHostKeyChecking=no vagrant@server402 'echo "gprm8350" | sudo passwd hacluster'
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
 ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
