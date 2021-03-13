@@ -51,6 +51,7 @@ cat << EOF | tee /etc/hosts
 172.16.2.102 server202
 172.16.2.103 server302
 172.16.2.104 server402
+172.16.2.250 nfs
 EOF
 
 cat << EOF | tee /etc/ganesha/ganesha.conf
