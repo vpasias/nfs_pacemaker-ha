@@ -71,7 +71,8 @@ EXPORT{
     Protocols = "3","4" ;      # NFS protocols supported
     Transports = "UDP","TCP" ; # Transport protocols supported
     SecType = "sys";           # NFS Security flavors supported
-}EOF
+}
+EOF
 
 apt update -y
 
