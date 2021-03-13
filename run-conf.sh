@@ -40,6 +40,12 @@ ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo bash /home/vagrant/node_
 echo 'run-conf.sh: Running ssh vagrant@server402 “sudo bash /home/vagrant/node_setup.sh”'
 ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo bash /home/vagrant/node_setup.sh"
 
+sleep 30
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "uname -a"
+ssh -o StrictHostKeyChecking=no vagrant@server302 "uname -a"
+ssh -o StrictHostKeyChecking=no vagrant@server402 "uname -a"
+
 echo 'run-conf.sh: Configuration of GlusterFS'
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status glusterd"
