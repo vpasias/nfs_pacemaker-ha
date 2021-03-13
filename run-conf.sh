@@ -15,8 +15,9 @@ rm -f /home/vagrant/.ssh/id_rsa.pub
 echo 'run-conf.sh: Running ssh-keygen -t rsa'
 ssh-keygen -q -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
 
-echo 'run-conf.sh: Install sshpass'
+echo 'run-conf.sh: Install sshpass & nfs-common'
 sudo apt-get install sshpass -y
+sudo apt -y install nfs-common 
 
 echo 'run-conf.sh: Running ssh-copy-id for server202'
 sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no vagrant@server202
@@ -38,3 +39,52 @@ echo 'run-conf.sh: Running ssh vagrant@server302 “sudo bash /home/vagrant/node
 ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo bash /home/vagrant/node_setup.sh"
 echo 'run-conf.sh: Running ssh vagrant@server402 “sudo bash /home/vagrant/node_setup.sh”'
 ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo bash /home/vagrant/node_setup.sh"
+
+echo 'run-conf.sh: Configuration of GlusterFS'
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status glusterd"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster peer probe server302"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster peer probe server402"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster peer status"
+ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo gluster peer status"
+ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo gluster peer status"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume create sharedvol replica 3 server202:/data/glusterfs/sharedvol/mybrick/brick \
+server302:/data/glusterfs/sharedvol/mybrick/brick \
+server402:/data/glusterfs/sharedvol/mybrick/brick"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume start sharedvol"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume info"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume status"
+
+echo 'run-conf.sh: GlusterFS configuration finished'
+
+echo 'run-conf.sh: Configure Pacemaker'
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 'echo "gprm8350" | sudo passwd hacluster --stdin'
+ssh -o StrictHostKeyChecking=no vagrant@server302 'echo "gprm8350" | sudo passwd hacluster --stdin'
+ssh -o StrictHostKeyChecking=no vagrant@server402 'echo "gprm8350" | sudo passwd hacluster --stdin'
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
+ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
+ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl stop corosync && sleep 10 && sudo systemctl stop pacemaker"
+ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl stop corosync && sleep 10 && sudo systemctl stop pacemaker"
+ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl stop corosync && sleep 10 && sudo systemctl stop pacemaker"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status pacemaker && sudo systemctl status corosync"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs host auth -u hacluster -p gprm8350 server202 server302 server402"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster setup HA-NFS server202 server302 server402"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster start --all"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster enable --all"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs property set stonith-enabled=false"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs resource create nfs_server systemd:nfs-ganesha op monitor interval=10s"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs resource create nfs_ip ocf:heartbeat:IPaddr2 ip=172.16.2.250 cidr_netmask=24 op monitor interval=10s"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs resource group add nfs_group nfs_server nfs_ip"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs status"
+
+echo 'run-conf.sh: Pacemaker configuration finished'
