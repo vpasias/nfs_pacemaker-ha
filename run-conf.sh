@@ -17,7 +17,7 @@ ssh-keygen -q -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
 
 echo 'run-conf.sh: Install sshpass & nfs-common'
 sudo apt-get install sshpass -y
-sudo apt -y install nfs-common 
+sudo apt -y install nfs-common sshpass
 
 echo 'run-conf.sh: Running ssh-copy-id for server202'
 sshpass -p vagrant ssh-copy-id -o StrictHostKeyChecking=no vagrant@server202
