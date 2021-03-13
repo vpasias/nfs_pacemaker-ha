@@ -97,6 +97,13 @@ ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl stop pacemaker
 sleep 20
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status pacemaker && sudo systemctl status corosync"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo ssh-keygen -q -t rsa -N "" -f /root/.ssh/id_rsa"
+
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@server202"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@server302"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@server402"
+
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs host auth -u hacluster -p gprm8350 server202 server302 server402"
 sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster setup HA-NFS server202 server302 server402"
