@@ -1,16 +1,12 @@
 #! /bin/sh
 
 DEBIAN_FRONTEND=noninteractive apt update
-DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-simplejson
+DEBIAN_FRONTEND=noninteractive apt install -y python3 python3-simplejson xfsprogs
+DEBIAN_FRONTEND=noninteractive apt install -y corosync glusterfs-server nfs-ganesha-gluster pacemaker pcs
 
-echo "configfs" >> /etc/modules
-update-initramfs -u
-systemctl daemon-reload
-
-systemctl stop open-iscsi
-systemctl disable open-iscsi
-systemctl stop iscsid
-systemctl disable iscsid
+modprobe -v xfs
+grep xfs /proc/filesystems
+modinfo xfs
 
 echo "root:gprm8350" | sudo chpasswd
 
@@ -38,6 +34,14 @@ cat /sys/module/kvm_intel/parameters/nested
 modinfo kvm_intel | grep -i nested
 
 mkdir -p /etc/apt/sources.list.d
+
+mkfs.xfs -f -i size=512 -L gluster-000 /dev/sda
+
+mkdir -p /data/glusterfs/sharedvol/mybrick
+echo 'LABEL=gluster-000 /data/glusterfs/sharedvol/mybrick xfs defaults  0 0' >> /etc/fstab
+mount /data/glusterfs/sharedvol/mybrick
+
+systemctl enable --now glusterd
 
 apt update -y
 
