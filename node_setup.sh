@@ -43,6 +43,14 @@ mount /data/glusterfs/sharedvol/mybrick
 
 systemctl enable --now glusterd
 
+cat << EOF | tee /etc/hosts
+127.0.0.1 localhost
+172.16.2.101 server102
+172.16.2.102 server202
+172.16.2.103 server302
+172.16.2.104 server402
+EOF
+
 apt update -y
 
 reboot
