@@ -54,7 +54,11 @@ ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume create sh
 server302:/data/glusterfs/sharedvol/mybrick/brick \
 server402:/data/glusterfs/sharedvol/mybrick/brick"
 
+sleep 10
+
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume start sharedvol"
+
+sleep 10
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo gluster volume info"
 
@@ -88,13 +92,21 @@ sleep 20
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status pacemaker && sudo systemctl status corosync"
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs host auth -u hacluster -p gprm8350 server202 server302 server402"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster setup HA-NFS server202 server302 server402"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster start --all"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs cluster enable --all"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs property set stonith-enabled=false"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs resource create nfs_server systemd:nfs-ganesha op monitor interval=10s"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs resource create nfs_ip ocf:heartbeat:IPaddr2 ip=172.16.2.250 cidr_netmask=24 op monitor interval=10s"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs resource group add nfs_group nfs_server nfs_ip"
+sleep 5
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs status"
 
 echo 'run-conf.sh: Pacemaker configuration finished'
