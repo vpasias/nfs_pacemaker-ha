@@ -72,9 +72,19 @@ ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl enable corosyn
 ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
 ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl enable corosync && sudo systemctl enable pacemaker && sudo systemctl enable --now pcsd"
 
-ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl stop corosync && sleep 10 && sudo systemctl stop pacemaker"
-ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl stop corosync && sleep 10 && sudo systemctl stop pacemaker"
-ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl stop corosync && sleep 10 && sudo systemctl stop pacemaker"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl stop corosync"
+sleep 10
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl stop pacemaker"
+
+ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl stop corosync"
+sleep 10
+ssh -o StrictHostKeyChecking=no vagrant@server302 "sudo systemctl stop pacemaker"
+
+ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl stop corosync"
+sleep 10
+ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl stop pacemaker"
+
+sleep 20
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status pacemaker && sudo systemctl status corosync"
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo pcs host auth -u hacluster -p gprm8350 server202 server302 server402"
