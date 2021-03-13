@@ -96,7 +96,8 @@ ssh -o StrictHostKeyChecking=no vagrant@server402 "sudo systemctl stop pacemaker
 
 sleep 20
 
-ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status pacemaker && sudo systemctl status corosync"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status pacemaker"
+ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo systemctl status corosync"
 
 ssh -o StrictHostKeyChecking=no vagrant@server202 "sudo rm -rf /etc/corosync/corosync.conf"
 
