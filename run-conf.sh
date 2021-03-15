@@ -5,7 +5,7 @@ export LC_CTYPE="UTF-8",
 export LANG="en_US.UTF-8"
 
 # ---- PART ONE ------
-# Configure SSH connectivity from 'deployment' - server101 to Target Hosts 
+# Configure SSH connectivity from 'deployment' - server104 to Target Hosts 
 
 echo 'run-conf.sh: Cleaning directory /home/vagrant/.ssh/'
 rm -f /home/vagrant/.ssh/known_hosts
