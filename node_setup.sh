@@ -47,11 +47,19 @@ mv /etc/hosts /etc/old.hosts
 
 cat << EOF | tee /etc/hosts
 127.0.0.1 localhost
-172.16.2.101 server102
-172.16.2.102 server202
-172.16.2.103 server302
-172.16.2.104 server402
-172.16.2.250 nfs
+172.16.1.101 server101
+172.16.1.102 server102
+172.16.1.103 server103
+172.16.2.101 server104
+172.16.1.104 server301
+172.16.1.105 server302
+172.16.1.106 server303
+172.16.2.102 server304
+172.16.3.101 server501
+172.16.3.102 server502
+172.16.3.103 server503
+172.16.4.101 server504
+172.16.3.250 nfs
 EOF
 
 mv /etc/ganesha/ganesha.conf /etc/ganesha/old.ganesha.conf
