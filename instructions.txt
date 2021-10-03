@@ -1,0 +1,38 @@
+# Create network infrastructure as per automatic-for-the-people (https://github.com/vpasias/automatic-for-the-people) - a-f-t-p.txt
+
+###################### Create a highly available NFS service (https://oracle.github.io/linux-labs/HA-NFS) ########################################################
+########### (https://www.lisenet.com/2016/activeactive-high-availability-pacemaker-cluster-with-gfs2-and-iscsi-shared-storage-on-centos-7/) ###################################
+
+vagrant ssh server104
+
+git clone https://github.com/vpasias/nfs_pacemaker-ha.git && cd nfs_pacemaker-ha && chmod +x *.sh && ls -la && sudo mv /etc/hosts /etc/old.hosts && sudo cp etc.hosts /etc/hosts
+
+./run-conf.sh
+
+df -hT
+mkdir /home/vagrant/sharedvol
+sudo mount -t nfs nfs:/sharedvol /home/vagrant/sharedvol
+df -hT
+df /home/vagrant/sharedvol
+
+#sudo vim /home/vagrant/sharedvol/hello
+#Hello World
+
+ls -la /home/vagrant/sharedvol
+
+exit
+
+vagrant ssh server701 -c "sudo -i"
+
+pcs status
+df -hT
+
+ssh-keygen -q -t rsa -N "" -f /root/.ssh/id_rsa
+
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@server202 && \
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@server302 && \
+sshpass -p gprm8350 ssh-copy-id -o StrictHostKeyChecking=no root@server402
+
+exit
+
+####################################################################################################################################
